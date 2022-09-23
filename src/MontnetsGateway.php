@@ -28,12 +28,26 @@ class MontnetsGateway extends Gateway
         $password = $config->get('password');
 
         $uri = 'sms/v2/std/single_send';
+        if (! str_ends_with($host, '/')) {
+            $host .= '/';
+        }
 
-        return $this->postJson($host . $uri, [
+        $timestamp = date('mdHis');
+        $content = iconv('UTF-8', 'gbk', $message->getContent());
+
+        return $this->postJson($host . $uri, $data = [
             'userid' => $username,
-            'pwd' => $password,
             'mobile' => $to->getNumber(),
-            'content' => $message->getContent(),
+            'timestamp' => $timestamp,
+            'pwd' => $this->buildPwd($username, $password, $timestamp),
+            'content' => urlencode($content),
         ]);
+    }
+
+    protected function buildPwd(string $username, string $password, string $timestamp): string
+    {
+        $str = $username . '00000000' . $password . $timestamp;
+
+        return md5($str);
     }
 }
