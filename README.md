@@ -44,8 +44,11 @@ $config = [
 $easySms = new EasySms($config);
 
 try {
+    $content = '您的验证码为: 1111';
+    $content = iconv('UTF-8', 'gbk', $content);
+    
     $res = $easySms->send(18678010000, [
-        'content' => '您的验证码为: 6379',
+        'content' => $content,
     ]);
 
     var_dump($res);
