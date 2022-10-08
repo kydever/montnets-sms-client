@@ -33,7 +33,7 @@ class MontnetsGateway extends Gateway
         }
 
         $timestamp = date('mdHis');
-        $content = iconv('UTF-8', 'gbk', $message->getContent());
+        $content = $message->getContent();
 
         return $this->postJson($host . $uri, $data = [
             'userid' => $username,
